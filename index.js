@@ -41,16 +41,27 @@ async function toConnect() {
     async function getProducts() {
       // modifier cette function : elle doit renvoyer uniquement les produits qui contiennent Xiaomi dans le nom
 
-      return await Product.find();
+      return await Product.find({
+        name: /Xi/i, //regexp --> chercher dans une chaine de caractères
+      });
     }
 
     const Product = mongoose.model('product', productsSchema);
 
     const product = createProduct('Xiaomi 19', 10);
-    const product1 = createProduct('Trotinette', 20);
-    const product2 = createProduct('Post-it XXL', 2);
+    const product1 = createProduct('xiaomi', 20);
+    const product2 = createProduct('samsung', 2);
+
+    async function deleteProduct(id) {
+      await Product.deleteOne({ id });
+      console.log('Deleted successfully the product');
+    }
 
     // save(product, product1, product2);
+
+    // await Product.deleteMany();
+
+    deleteProduct('62bc49ad66f5c1dffcea5daf');
 
     const products = getProducts().then((products) => console.log(products));
   } catch (err) {
