@@ -38,45 +38,58 @@ async function toConnect() {
       products.forEach(async (p) => await p.save());
     }
 
-    async function getProducts() {
-      // modifier cette function : elle doit renvoyer uniquement les produits qui contiennent Xiaomi dans le nom
-
-      return await Product.find({
-        name: /Xi/i, //regexp --> chercher dans une chaine de caractères
-      });
+    async function getProduct(id) {
+      return await Product.findOne({ _id: id });
     }
-
-    const Product = mongoose.model('product', productsSchema);
-
-    const product = createProduct('Xiaomi 19', 10);
-    const product1 = createProduct('xiaomi', 20);
-    const product2 = createProduct('samsung', 2);
 
     async function deleteProduct(id) {
       await Product.deleteOne({ id });
       console.log('Deleted successfully the product');
     }
 
-    // save(product, product1, product2);
+    const Product = mongoose.model('product', productsSchema);
 
-    // await Product.deleteMany();
+    ////////////////UPDATE A PRODUCT////////////////
 
-    deleteProduct('62bc49ad66f5c1dffcea5daf');
+    //by query
+    // getProduct('62bc641011f5b3d9dc4a2ac9').then((product) => {
+    //   product.price = 12;
 
-    const products = getProducts().then((products) => console.log(products));
+    //   product.save().then((result) => console.log(result));
+    // });
+
+    // const updatedProduct = await Product.updateOne(
+    //   { _id: '62bd500235051658dd9dc638' },
+    //   {
+    //     name: 'Product 2',
+    //   }
+    // );
+
+    // console.log(updatedProduct);
+
+    async function updateProduct(id, data) {
+      // const updatedProduct = await Product.findByIdAndUpdate(id, data); ==> don't send the updated product
+
+      const updatedProduct = await Product.findByIdAndUpdate(id, data, {
+        new: true,
+      });
+
+      console.log(updatedProduct);
+    }
+
+    updateProduct('62bc641011f5b3d9dc4a2ac9', {
+      name: 'Xiaomi 24',
+      numberItems: 10, // impossible , not part of the schema
+    });
+
+    ////////////////////////////////////////////////////////////////////
+
+    // save(new Product({ name: 'new P2', price: 50 }));
+
+    // const products = getProducts().then((products) => console.log(products));
   } catch (err) {
     console.error(err.message);
   }
 }
 
 toConnect();
-
-//
-
-// Créeation de plusiezurs produits (3)
-
-// Le schema doit respecter :
-
-// name: doit avoir entre 3 et 10 caractères grand max
-// prix : ne doit pas dépasser pas 100
-// date: l'heure de création du document
